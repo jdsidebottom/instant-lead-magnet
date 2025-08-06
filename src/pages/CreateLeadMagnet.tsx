@@ -230,8 +230,12 @@ export default function CreateLeadMagnet() {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Dashboard
               </Button>
-              <div className="flex items-center space-x-2">
-                <Sparkles className="h-6 w-6 text-primary" />
+              <div className="flex items-center space-x-3">
+                <img 
+                  src="https://rbhvcwzjvgatesivsxbb.supabase.co/storage/v1/object/public/instantleadmagnet//InstantLeadMagnet.png"
+                  alt="Lead Magnet AI"
+                  className="h-8 w-auto object-contain"
+                />
                 <h1 className="text-xl font-bold text-gray-900">Create Lead Magnet</h1>
               </div>
             </div>

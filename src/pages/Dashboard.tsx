@@ -5,21 +5,47 @@ import { Button } from '../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
 import { PlusCircle, FileText, BarChart3, Settings, Sparkles } from 'lucide-react'
+import { SupabaseSetup } from '../components/SupabaseSetup'
+import { isSupabaseConfigured } from '../lib/supabase'
 
 export default function Dashboard() {
   const { user, loading, signOut } = useAuth()
   const navigate = useNavigate()
+  const [logoError, setLogoError] = useState(false)
   const [stats, setStats] = useState({
     totalLeadMagnets: 0,
     totalDownloads: 0,
     conversionRate: 0
   })
 
+  const logoSources = [
+    "https://i.imgur.com/Y9Sz4XE.png", // Direct Imgur image URL
+    "https://i.imgur.com/Y9Sz4XE.jpg", // Try JPG format
+    "https://i.imgur.com/Y9Sz4XE.jpeg", // Try JPEG format
+    "https://rbhvcwzjvgatesivsxbb.supabase.co/storage/v1/object/public/instantleadmagnet/InstantLeadMagnet.png",
+    "/logo.png"
+  ]
+  
+  const [currentLogoIndex, setCurrentLogoIndex] = useState(0)
+
+  const handleLogoError = () => {
+    if (currentLogoIndex < logoSources.length - 1) {
+      setCurrentLogoIndex(currentLogoIndex + 1)
+    } else {
+      setLogoError(true)
+    }
+  }
+
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && isSupabaseConfigured) {
       navigate('/auth')
     }
   }, [user, loading, navigate])
+
+  // Show Supabase setup if not configured
+  if (!isSupabaseConfigured) {
+    return <SupabaseSetup />
+  }
 
   if (loading) {
     return (
@@ -42,11 +68,21 @@ export default function Dashboard() {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2">
-                <Sparkles className="h-8 w-8 text-primary" />
-                <h1 className="text-2xl font-bold text-gray-900">Lead Magnet AI</h1>
-              </div>
+            <div className="flex items-center">
+              {!logoError ? (
+                <img 
+                  key={currentLogoIndex}
+                  src={logoSources[currentLogoIndex]}
+                  alt="Lead Magnet AI"
+                  className="h-32 w-auto object-contain"
+                  onError={handleLogoError}
+                  crossOrigin="anonymous"
+                />
+              ) : (
+                <div className="h-32 w-32 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                  LM
+                </div>
+              )}
             </div>
             <div className="flex items-center space-x-4">
               <Badge variant="secondary" className="hidden sm:inline-flex">
@@ -60,10 +96,10 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          {/* Welcome Section */}
-          <div className="mb-8">
+      <main className="max-w-7xl mx-auto py-3 sm:px-6 lg:px-8">
+        <div className="px-4 py-3 sm:px-0">
+          {/* Welcome Section - Moved Up */}
+          <div className="mb-6">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
               Welcome back! 👋
             </h2>
